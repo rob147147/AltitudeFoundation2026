@@ -89,7 +89,7 @@ while (keep_processing):
         cy = int(y + 0.4 * h)
         overlay_frame(image, overlay_image, cx, cy)
 
-        # For each face, overlay the image onto the frame
+        # for each face, overlay the image onto the frame
 
         # for face in faces:
         #     x, y, w, h = face

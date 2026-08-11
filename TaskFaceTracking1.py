@@ -54,28 +54,68 @@ while (keep_processing):
     # set result to background, or frame if no background loaded
     
     result = background.copy() if background is not None else image.copy()
+
+    # try out a blurred background!
+
+    # result = cv2.GaussianBlur(image, (15, 15), 0)
+    
     
     # check if there are any faces to apply mask to
     
     if len(faces) > 0:
         
-        # find the largest face and create oval mask
+        # find the largest face
         
         x, y, w_face, h_face = max(faces, key=lambda f: f[2] * f[3])
         cx = int(x + 0.5 * w_face)
         cy = int(y + 0.4 * h_face)
-        
+
+        # create initial mask
+        mask = np.zeros((h, w), dtype=np.uint8)
+
+#####################################################################
+
+        # create circle mask
+
+        cv2.circle(mask, (cx, cy), int(max(w_face, h_face) / 2), 255, -1)
+
+
+        # create square mask
+
+        # size = int(max(w_face, h_face) / 2)
+        # cv2.rectangle(mask, (cx - size, cy - size), (cx + size, cy + size), 255, -1)
+
+
+        # create triangle mask
+
+        # size = int(max(w_face, h_face) / 2)
+        # triangle = np.array([(cx, cy - size), (cx - size, cy + size), (cx + size, cy + size)], dtype=np.int32)
+        # cv2.fillPoly(mask, [triangle], 255)
+
+
         # create (tall) oval mask
         
-        mask = np.zeros((h, w), dtype=np.uint8)
-        cv2.ellipse(mask, (cx, cy), (int(w_face * 0.6), int(h_face * 0.8)), 0, 0, 360, 255, -1)
-        
-        # show camera in oval, background outside
-        
+        # mask = np.zeros((h, w), dtype=np.uint8)
+        # cv2.ellipse(mask, (cx, cy), (int(w_face * 0.6), int(h_face * 0.8)), 0, 0, 360, 255, -1)
+
+
+#####################################################################
+
+        # make sure the mask covers all three channels (BGR) 
+               
         mask_3ch = cv2.merge([mask, mask, mask])
-        result = np.where(mask_3ch == 255, image, result)
+
+        ### show camera, hide everything outside
+
+        # this image will be shown in the mask
+        in_mask = image
+
+        # this image will be shown outside the mask
+        outside_mask = result
+
+        result = np.where(mask_3ch == 255, in_mask, outside_mask)
     
-    # display background image oval outline for face
+    # display background image with outline for face
         
     cv2.imshow(window_name, result)
 
