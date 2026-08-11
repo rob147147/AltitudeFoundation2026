@@ -55,7 +55,7 @@ def mouse_callback(event, x, y, flags, param):
 
 # define video capture with access to camera 0
 
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 1
 # define display window
 
@@ -94,6 +94,12 @@ while (keep_processing):
     # black out unmasked area of original image
 
     image_masked = cv2.bitwise_and(image, image, mask=mask)
+
+    # can we have some more fun here? We could try to change the saturation of the pixels in image_masked
+    # hint - image_masked is currently in BGR format. We would need to change it to HSV first, and convert it back to BGR when we are finished
+    # hint2 - we will want to consider what happens on mouse clicks, both left and and right click
+
+    
 
     # combine the two images for display
 
